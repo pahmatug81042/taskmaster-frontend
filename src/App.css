@@ -119,3 +119,19 @@ textarea {
 .project-item p {
   margin-bottom: 1rem;
 }
+
+/* Edit Form inside Project Item */
+.project-item input,
+.project-item textarea {
+  margin-bottom: 0.75rem;
+}
+
+.project-item .edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.project-item .edit-actions button {
+  flex: 0 0 auto;
+}
