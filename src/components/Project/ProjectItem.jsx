@@ -55,15 +55,19 @@ const ProjectItem = ({ project, setProjects }) => {
                         onChange={handleChange}
                         placeholder="Project Description"
                     />
-                    <button onClick={handleUpdate}>Save</button>
-                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                    <div className="edit-actions">
+                        <button onClick={handleUpdate}>Save</button>
+                        <button onClick={() => setIsEditing(false)}>Cancel</button>
+                    </div>
                 </>
             ) : (
                 <>
                     <h3>{project.name}</h3>
                     <p>{project.description}</p>
-                    <button onClick={() => setIsEditing(true)}>Edit</button>
-                    <button onClick={handleDelete}>Delete</button>
+                    <div className="edit-actions">
+                        <button onClick={() => setIsEditing(true)}>Edit</button>
+                        <button onClick={handleDelete}>Delete</button>
+                    </div>
                 </>
             )}
         </div>
