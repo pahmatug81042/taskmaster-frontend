@@ -13,7 +13,7 @@ const Dashboard = () => {
                 const data = await projectService.getProjects();
                 setProjects(data);
             } catch (err) {
-                setError("Failed to load projects");
+                setError("Failed to load projects", err);
             } finally {
                 setLoading(false);
             }
