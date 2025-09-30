@@ -13,9 +13,75 @@ a {
 
 button {
   cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
-input, textarea {
+button:hover {
+  background-color: #0056b3;
+}
+
+input,
+textarea {
   padding: 0.5rem;
   font-size: 1rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Auth Pages */
+.auth-container {
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.auth-container .error {
+  color: red;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Home Page */
+.home-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.home-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.home-features,
+.home-tech {
+  margin-bottom: 2rem;
+}
+
+.home-features ul {
+  list-style: disc;
+  margin-left: 2rem;
 }
