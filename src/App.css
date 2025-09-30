@@ -85,3 +85,37 @@ textarea {
   list-style: disc;
   margin-left: 2rem;
 }
+
+/* Dashboard */
+.dashboard-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.dashboard-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Project List */
+.project-list {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Project Item */
+.project-item {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.project-item h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.project-item p {
+  margin-bottom: 1rem;
+}
