@@ -1,40 +1,37 @@
 import { useState } from "react";
 import projectService from "../../services/projectService";
+import TaskList from "../Task/TaskList";
 
 const ProjectItem = ({ project, setProjects }) => {
-    // Local state for edit mode
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         name: project.name,
         description: project.description,
     });
 
-    // Handle form input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Save updates to backend
     const handleUpdate = async () => {
         try {
             const updated = await projectService.updateProject(project._id, formData);
             setProjects((prev) => 
                 prev.map((p) => (p._id === project._id ? updated : p))
             );
-            setIsEditing(false); // exit edit mode
-        } catch (err) {
-            console.error("Failed to update project", err);
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Failed to update project", error);
         }
     };
 
-    // Delete project
     const handleDelete = async () => {
         try {
             await projectService.deleteProject(project._id);
             setProjects((prev) => prev.filter((p) => p._id !== project._id));
-        } catch (err) {
-            console.error("Failed to delete project", err);
+        } catch (error) {
+            console.error("Failed to delete project", error);
         }
     };
 
@@ -70,6 +67,9 @@ const ProjectItem = ({ project, setProjects }) => {
                     </div>
                 </>
             )}
+
+            {/* TaskList Integration */}
+            <TaskList projectId={project._id} />
         </div>
     );
 };
