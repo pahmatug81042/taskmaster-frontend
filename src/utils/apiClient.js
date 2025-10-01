@@ -9,7 +9,7 @@ export const apiClient = axios.create({
     },
 });
 
-// Add interceptor to attach token automatically
+// Automatically attach token if it exists
 apiClient.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {

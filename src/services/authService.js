@@ -9,20 +9,23 @@ export const register = async (userData) => {
 // Login user -> returns JWT + user info
 export const login = async (credentials) => {
     const response = await apiClient.post("/users/login", credentials);
-    if (response.token) {
-        // persist token in localStorage
-        localStorage.setItem("token", JSON.stringify(response.token));
-        localStorage.setItem("user", JSON.stringify(response));
+
+    // API expected to return { token, user }
+    if (response.data?.token) {
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        localStorage.setItem("user", JSON.stringify(response.data.user));
     }
-    return response;
+    return response.data;
 };
 
 // Logout user -> clear localStorage
 export const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
 };
 
 // Get current user from localStorage
 export const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"));
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
 };
