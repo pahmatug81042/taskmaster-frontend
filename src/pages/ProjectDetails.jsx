@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import projectService from "../services/projectService";
 import TaskList from "../components/Task/TaskList";
 
 const ProjectDetails = () => {
     const { projectId } = useParams();
     const [project, setProject] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState("");
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -29,7 +29,13 @@ const ProjectDetails = () => {
 
     return (
         <div className="project-details-container">
-            <h1>{project.name}</h1>
+            <div className="project-details-header">
+                <h1>{project.name}</h1>
+                <Link to="/dashboard">
+                    <button className="back-button">← Back to Dashboard</button>
+                </Link>
+            </div>
+            
             <p>{project.description}</p>
 
             {/* TaskList for this project */}
