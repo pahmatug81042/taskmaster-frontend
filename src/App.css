@@ -34,6 +34,7 @@ select {
   width: 100%;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 /* Auth Pages */
@@ -136,6 +137,42 @@ select {
   flex: 0 0 auto;
 }
 
+/* Project Form */
+.project-form {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.project-form input,
+.project-form textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.project-form button {
+  align-self: flex-start;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.project-form button:hover {
+  background-color: #218838;
+}
+
 /* Task List */
 .task-list {
   margin-top: 1rem;
@@ -184,6 +221,7 @@ select {
   align-self: flex-start;
 }
 
+/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
