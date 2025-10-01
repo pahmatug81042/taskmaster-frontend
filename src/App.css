@@ -27,13 +27,13 @@ button:hover {
 }
 
 input,
-textarea {
+textarea,
+select {
   padding: 0.5rem;
   font-size: 1rem;
   width: 100%;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
 }
 
 /* Auth Pages */
@@ -136,7 +136,54 @@ textarea {
   flex: 0 0 auto;
 }
 
-/* Navbar */
+/* Task List */
+.task-list {
+  margin-top: 1rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.task-list h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Task Item */
+.task-item {
+  background-color: #fdfdfd;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 0.75rem;
+}
+
+.task-item h4 {
+  margin: 0 0 0.25rem 0;
+}
+
+.task-item p {
+  margin: 0 0 0.25rem 0;
+}
+
+.task-item select {
+  width: auto;
+  margin-bottom: 0.5rem;
+}
+
+/* Task Form */
+.task-form {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.task-form button {
+  align-self: flex-start;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
