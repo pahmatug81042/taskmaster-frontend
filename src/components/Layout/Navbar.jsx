@@ -1,14 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Navbar = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setUser(null); // clear user state
-    localStorage.removeItem("token"); // remove stored JWT if applicable
+    logout(); // clears auth state and localStorage
     navigate("/login");
   };
 
