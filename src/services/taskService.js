@@ -1,26 +1,34 @@
 import { apiClient } from "../utils/apiClient";
 
-// Get all tasks for a specific project
-export const getTasks = async (projectId) => {
-    return apiClient.get(`/projects/${projectId}/tasks`);
+// Create task under a project
+const createTask = async (projectId, taskData) => {
+    return apiClient.post(`/projects/${projectId}/tasks`, taskData, { auth: true });
 };
 
-// Create a new task under a project
-export const createTask = async (projectId, taskData) => {
-    return apiClient.post(`/projects/${projectId}/tasks`, taskData);
+// Get all tasks for a project
+const getTasks = async (projectId) => {
+    return apiClient.get(`/projects/${projectId}/tasks`, { auth: true });
 };
 
-// Get a single task by ID
-export const getTaskById = async (projectId, taskId) => {
-    return apiClient.get(`/projects/${projectId}/tasks/${taskId}`);
+// Get single task by ID
+const getTaskById = async (projectId, taskId) => {
+    return apiClient.get(`/projects/${projectId}/tasks/${taskId}`, { auth: true });
 };
 
-// Update a task
-export const updateTask = async (projectId, taskId, taskData) => {
-    return apiClient.put(`/projects/${projectId}/tasks/${taskId}`, taskData);
+// Update task
+const updateTask = async (projectId, taskId, taskData) => {
+    return apiClient.put(`/projects/${projectId}/tasks/${taskId}`, taskData, { auth: true });
 };
 
-// Delete a task
-export const deleteTask = async (projectId, taskId) => {
-    return apiClient.delete(`/projects/${projectId}/tasks/${taskId}`);
+// Delete task
+const deleteTask = async (projectId, taskId) => {
+    return apiClient.delete(`/projects/${projectId}/tasks/${taskId}`, { auth: true });
+};
+
+export default {
+    createTask,
+    getTasks,
+    getTaskById,
+    updateTask,
+    deleteTask,
 };
