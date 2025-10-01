@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 
 const UserContext = createContext();
@@ -7,9 +6,14 @@ const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-    const { user, isAuthenticated } = useAuth();
+    const { user: authUser, isAuthenticated } = useAuth();
+    const [user, setUser] = useState(authUser);
 
-    // Additional user-related logic could be added here (profile updates, settings, etc.)
+    // Keep local user state in sync with AuthContext on reload or login/logout
+    useEffect(() => {
+        setUser(authUser);
+    }, [authUser]);
+
     const value = {
         user,
         isAuthenticated,
