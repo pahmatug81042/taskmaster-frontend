@@ -300,3 +300,36 @@ select {
   border-top: 1px solid #ddd;
   font-size: 0.9rem;
 }
+
+/* Common Button */
+.common-button {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.common-button:hover {
+  background-color: #0056b3;
+}
+
+/* Common Input */
+.common-input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.common-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
