@@ -4,14 +4,14 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Layout/Navbar';
+import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import './App.css';
 
 function App() {
   return (
     <>
-      <Navbar />
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route 
