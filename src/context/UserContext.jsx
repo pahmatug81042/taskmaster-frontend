@@ -1,32 +1,21 @@
 /* eslint-disable react-refresh/only-export-components */
-/* eslint-disable react-hooks/exhaustive-deps */
-import { createContext, useState, useEffect } from "react";
+import React, { createContext, useContext } from "react";
+import { useAuth } from "./AuthContext";
 
-export const UserContext = createContext();
+const UserContext = createContext();
+
+export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const { user, isAuthenticated } = useAuth();
 
-    // Load user from localStorage on mount
-    useEffect(() => {
-        const storedUser = localStorage.getItem("token");
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+    // Additional user-related logic could be added here (profile updates, settings, etc.)
+    const value = {
+        user,
+        isAuthenticated,
+    };
 
-    // Persist user to localStorage whenever it changes
-    useEffect(() => {
-        if (user) {
-            localStorage.setItem("token", JSON.stringify(user));
-        } else {
-            localStorage.removeItem("token");
-        }
-    }, []);
-
-    return (
-        <UserContext.Provider value={{ user, setUser }}>
-            {children}
-        </UserContext.Provider>
-    );
+    return <UserContext.Provider value={value}>
+        {children}
+    </UserContext.Provider>
 };
