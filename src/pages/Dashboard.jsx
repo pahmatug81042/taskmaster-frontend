@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import projectService from "../services/projectService";
 import ProjectList from "../components/Project/ProjectList";
+import ProjectForm from "../components/Project/ProjectForm";
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
@@ -25,10 +26,13 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <h1>My Projects</h1>
-            {loading && <p>Loading projects...</p>}
+            {loading && <p>Loading Projects...</p>}
             {error && <p className="error">{error}</p>}
             {!loading && !error && (
-                <ProjectList projects={projects} setProjects={setProjects} />
+                <>
+                    <ProjectForm setProjects={setProjects} />
+                    <ProjectList projects={projects} setProjects={setProjects} />
+                </>
             )}
         </div>
     );
