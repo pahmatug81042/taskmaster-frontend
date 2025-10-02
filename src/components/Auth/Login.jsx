@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/authService";
+import Input from "../common/Input";
+import Button from "../common/Button";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -10,7 +12,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
+        setError();
 
         try {
             const response = await login({ email, password });
@@ -28,21 +30,21 @@ const Login = () => {
             <h2>Login</h2>
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
-                <input 
+                <Input 
                     type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
-                <input 
+                <Input 
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Login</button>
+                <Button type="submit">Login</Button>
             </form>
         </div>
     );
