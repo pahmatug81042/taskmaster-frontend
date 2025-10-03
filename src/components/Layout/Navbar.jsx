@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import ThemeToggleButton from "../ThemeToggleButton";
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
@@ -96,6 +97,8 @@ const Navbar = () => {
               </Link>
             </>
           )}
+          {/* Theme toggle for mobile */}
+          <ThemeToggleButton />
         </div>
       </div>
     </nav>
