@@ -1,5 +1,7 @@
 import { useState } from "react";
 import projectService from "../../services/projectService";
+import Input from "../common/Input";
+import Button from "../common/Button";
 
 const ProjectForm = ({ setProjects }) => {
     const [formData, setFormData] = useState({
@@ -21,7 +23,7 @@ const ProjectForm = ({ setProjects }) => {
             setProjects((prev) => [...prev, newProject]);
             setFormData({ name: "", description: "" });
         } catch (error) {
-            console.error("Failed tp create project", error);
+            console.error("Failed to create project", error);
         } finally {
             setLoading(false);
         }
@@ -29,7 +31,7 @@ const ProjectForm = ({ setProjects }) => {
 
     return (
         <form className="project-form" onSubmit={handleSubmit}>
-            <input 
+            <Input 
                 type="text"
                 name="name"
                 value={formData.name}
@@ -37,15 +39,16 @@ const ProjectForm = ({ setProjects }) => {
                 placeholder="Project Name"
                 required
             />
-            <textarea 
+            <Input 
+                as="textarea"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Project Description"
             />
-            <button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Add Project"}
-            </button>
+            <Button type="submit" disabled={loading}>
+                {loading ? "Creating..." : "Add Project"};
+            </Button>
         </form>
     );
 };
