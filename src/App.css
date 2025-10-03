@@ -381,3 +381,54 @@ input[type="submit"]:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+/* Theme Styles */
+body.light {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+body.dark .navbar {
+  background-color: #1f1f1f;
+  color: #f1f1f1;
+}
+
+body.dark .navbar a {
+  color: #f1f1f1;
+}
+
+body.dark .navbar-right-mobile {
+  background-color: #1f1f1f;
+}
+
+body.dark .project-item,
+body.dark .task-item,
+body.dark .project-form,
+body.dark .task-list,
+body.dark .project-details-container {
+  background-color: #1f1f1f;
+  color: #f1f1f1;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.05);
+}
+
+body.dark .back-button,
+body.dark .common-button {
+  background-color: #007bff;
+  color: white;
+}
+
+body.dark .common-button:hover,
+body.dark .back-button:hover {
+  background-color: #0056b3;
+}
+
+body.dark .footer {
+  background-color: #1f1f1f;
+  color: #ccc;
+  border-top: 1px solid #333;
+}
