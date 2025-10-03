@@ -11,10 +11,14 @@ a {
   color: inherit;
 }
 
+/* Remove default style (to rely on .common-button instead) */
 button {
+  all: unset;
+  display: inline-block;
   cursor: pointer;
   padding: 0.5rem 1rem;
   font-size: 1rem;
+  text-align: center;
   background-color: #007bff;
   color: white;
   border: none;
@@ -29,12 +33,61 @@ button:hover {
 input,
 textarea,
 select {
+  font-family: inherit;
+}
+
+/* Uniform Inputs */
+.common-input,
+input,
+textarea,
+select {
   padding: 0.5rem;
   font-size: 1rem;
   width: 100%;
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
+  background-color: white;
+  color: #333;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.common-input:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Uniform Buttons */
+.common-button,
+button,
+input[type="submit"] {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.common-button:hover,
+button:hover,
+input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Disabled Button State */
+.common-button:disabled,
+button:disabled,
+input[type="submit"]:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 /* Auth Pages */
@@ -149,30 +202,6 @@ select {
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
-.project-form input,
-.project-form textarea {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 1rem;
-  width: 100%;
-}
-
-.project-form button {
-  align-self: flex-start;
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
-}
-
-.project-form button:hover {
-  background-color: #218838;
-}
-
 /* Task List */
 .task-list {
   margin-top: 1rem;
@@ -204,21 +233,12 @@ select {
   margin: 0 0 0.25rem 0;
 }
 
-.task-item select {
-  width: auto;
-  margin-bottom: 0.5rem;
-}
-
 /* Task Form */
 .task-form {
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.task-form button {
-  align-self: flex-start;
 }
 
 /* Navbar */
@@ -283,7 +303,7 @@ select {
   border-radius: 4px;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2 ease;
 }
 
 .back-button:hover {
@@ -299,37 +319,4 @@ select {
   color: #555;
   border-top: 1px solid #ddd;
   font-size: 0.9rem;
-}
-
-/* Common Button */
-.common-button {
-  cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.common-button:hover {
-  background-color: #0056b3;
-}
-
-/* Common Input */
-.common-input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  width: 100%;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.common-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
