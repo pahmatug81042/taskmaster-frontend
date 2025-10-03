@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../services/authService";
+import Input from "../common/Input";
+import Button from "../common/Button";
 
 const Register = () => {
     const [username, setUsername] = useState("");
@@ -28,28 +30,28 @@ const Register = () => {
             <h2>Register</h2>
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
-                <input 
+                <Input 
                     type="text"
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
                 />
-                <input 
+                <Input 
                     type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
-                <input 
+                <Input 
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Register</button>
+                <Button type="submit">Register</Button>
             </form>
         </div>
     );
