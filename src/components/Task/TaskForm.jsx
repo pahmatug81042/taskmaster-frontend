@@ -1,5 +1,7 @@
 import { useState } from "react";
 import taskService from "../../services/taskService";
+import Input from "../common/Input";
+import Button from "../common/Button";
 
 const TaskForm = ({ projectId, setTasks }) => {
     const [formData, setFormData] = useState({
@@ -26,7 +28,7 @@ const TaskForm = ({ projectId, setTasks }) => {
 
     return (
         <form className="task-form" onSubmit={handleSubmit}>
-            <input 
+            <Input 
                 type="text"
                 name="title"
                 value={formData.title}
@@ -34,19 +36,25 @@ const TaskForm = ({ projectId, setTasks }) => {
                 placeholder="Task Title"
                 required
             />
-            <textarea 
+            <Input 
+                as="textarea"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Task Description"
                 required
             />
-            <select name="status" value={formData.status} onChange={handleChange}>
+            <Input 
+                as="select"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+            >
                 <option value="To Do">To Do</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Done">Done</option>
-            </select>
-            <button type="submit">Add Task</button>
+            </Input>
+            <Button>Add Task</Button>
         </form>
     );
 };
