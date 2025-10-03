@@ -8,20 +8,24 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
+  // Toggle mobile menu
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
+  // Close menu if clicking outside
   const handleClickOutside = (e) => {
     if (menuRef.current && !menuRef.current.contains(e.target)) {
       setIsOpen(false);
     }
   };
 
+  // Close menu if Escape key is pressed
   const handleEscKey = (e) => {
     if (e.key === "Escape") {
       setIsOpen(false);
     }
   };
 
+  // Logout and close menu
   const handleLogout = () => {
     logout(); // clears auth state and localStorage
     navigate("/login");
@@ -45,11 +49,33 @@ const Navbar = () => {
           TaskMaster
         </Link>
       </div>
+
+      {/* Desktop links */}
       <div className="navbar-right">
-        <button className="common-button hamburger" onClick={toggleMenu}>
-          ☰
-        </button>
-        <div className={`nav-links ${isOpen ? "open" : ""}`}>
+        <div className="navbar-right-desktop">
+          <Link to="/">Home</Link>
+          {user ? (
+            <>
+              <Link to="/dashboard">Dashboard</Link>
+              <button onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <>
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+            </>
+          )}
+        </div>
+
+        {/* Hamburger icon for mobile */}
+        <div className="navbar-hamburger" onClick={toggleMenu}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`navbar-right-mobile ${isOpen ? "show" : ""}`}>
           <Link to="/" onClick={() => setIsOpen(false)}>
             Home
           </Link>
@@ -62,8 +88,12 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
-              <Link to="/register" onClick={() => setIsOpen(false)}>Register</Link>
+              <Link to="/login" onClick={() => setIsOpen(false)}>
+                Login
+              </Link>
+              <Link to="/register" onClick={() => setIsOpen(false)}>
+                Register
+              </Link>
             </>
           )}
         </div>
