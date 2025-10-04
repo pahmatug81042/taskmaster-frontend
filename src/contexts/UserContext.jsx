@@ -10,7 +10,6 @@ export const UserProvider = ({ children }) => {
     const { user: authUser, isAuthenticated } = useAuth();
     const [user, setUser] = useState(authUser);
 
-    // Keep local user state in sync with AuthContext on reload or login/logout
     useEffect(() => {
         setUser(authUser);
     }, [authUser]);
@@ -20,7 +19,5 @@ export const UserProvider = ({ children }) => {
         isAuthenticated,
     };
 
-    return <UserContext.Provider value={value}>
-        {children}
-    </UserContext.Provider>
+    return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 };
