@@ -10,11 +10,10 @@ export const register = async (userData) => {
     };
 
     const data = await apiClient.post("/users/register", payload);
-    // do not store token on register (backend policy)
     return data;
 };
 
-// Login user -> returns { token, ...user }
+// Login user (backend sets HttpOnly cookie)
 export const login = async (credentials) => {
     const payload = {
         email: sanitizeString(credentials.email),
@@ -22,21 +21,21 @@ export const login = async (credentials) => {
     };
 
     const data = await apiClient.post("/users/login", payload);
-
-    if (data?.token) {
-        // store token as plain string (not JSON-ified), store user object separately
-        localStorage.setItem("token", data.token);
-        if (data.user) {
-            localStorage.setItem("user", JSON.stringify(data.user));
-        }
+    if (data?.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
     }
     return data;
 };
 
-// Logout user -> clear localStorage
-export const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+// Logout user - clears cookie vua backend endpoint
+export const logout = async () => {
+    try {
+        await apiClient.post("/users/logout"); // backend clears cookie
+    } catch (error) {
+        console.warn("Logout request failed:", error.message);
+    } finally {
+        localStorage.removeItem("user");
+    }
 };
 
 // Get current user from localStorage
@@ -44,8 +43,7 @@ export const getCurrentUser = () => {
     try {
         const user = localStorage.getItem("user");
         return user ? JSON.parse(user) : null;
-    } catch (error) {
-        console.error(error);
+    } catch {
         localStorage.removeItem("user");
         return null;
     }
