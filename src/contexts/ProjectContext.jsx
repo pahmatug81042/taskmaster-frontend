@@ -3,31 +3,32 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import * as projectService from "../services/projectService";
 import { useAuth } from "./AuthContext";
 
-const ProjectContext = createContext();
+const projectContext = createContext();
 
-export const useProjects = () => useContext(ProjectContext);
+export const useProjects = () => useContext(projectContext);
 
 export const ProjectProvider = ({ children }) => {
     const { token } = useAuth();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Fetch projects on mount (if logged in)
     useEffect(() => {
         if (token) {
             fetchProjects();
         } else {
             setProjects([]);
         }
-    }, [token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const fetchProjects = async () => {
         setLoading(true);
         try {
             const data = await projectService.getProjects();
-            setProjects(data);            
+            setProjects(data || []);
         } catch (error) {
             console.error("Failed to fetch projects:", error);
+            setProjects([]);
         } finally {
             setLoading(false);
         }
@@ -36,13 +37,13 @@ export const ProjectProvider = ({ children }) => {
     const addProject = async (projectData) => {
         const newProject = await projectService.createProject(projectData);
         setProjects((prev) => [...prev, newProject]);
+        return newProject;
     };
 
     const updateProject = async (id, updates) => {
         const updated = await projectService.updateProject(id, updates);
-        setProjects((prev) => 
-            prev.map((proj) => (proj._id === id ? updated : proj))
-        );
+        setProjects((prev) => prev.map((proj) => (proj._id === id ? updated : proj)));
+        return updated;
     };
 
     const deleteProject = async (id) => {
@@ -59,9 +60,5 @@ export const ProjectProvider = ({ children }) => {
         deleteProject,
     };
 
-    return (
-        <ProjectContext.Provider value={value}>
-            {children}
-        </ProjectContext.Provider>
-    );
+    return <projectContext.Provider value={value}>{children}</projectContext.Provider>
 };
