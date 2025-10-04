@@ -1,50 +1,62 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect, useContext } from "react";
 import * as authService from "../services/authService";
+import apiClient from "../utils/apiClient";
 
-// Create Context
 const AuthContext = createContext();
 
-// Custom hook
 export const useAuth = () => useContext(AuthContext);
 
-// Provider component
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
-        const savedUser = localStorage.getItem("user");
-        return savedUser ? JSON.parse(savedUser) : null;
+        try {
+            const u = localStorage.getItem("user");
+            return u ? JSON.parse(u) : null;
+        } catch {
+            return null;
+        }
     });
-    const [token, setToken] = useState(() => localStorage.getItem("token") || null);
+
+    const [token, setToken] = useState(() => {
+        try {
+            return localStorage.getItem("token") || null;
+        } catch {
+            return null;
+        }
+    });
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setLoading(false);
     }, []);
 
-    // Handle login
+    // Login wrapper: saves token + user via authService
     const login = async (credentials) => {
         const data = await authService.login(credentials);
-        if (data.user && data.token) {
-            setUser(data.user);
+        if (data?.token) {
             setToken(data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("token", data.token);
+            if (data.user) setUser(data.user);
         }
         return data;
     };
 
-    // Handle register
+    // Register user
     const register = async (userData) => {
         return await authService.register(userData);
     };
 
-    // Handle logout
+    // Logout wrapper
     const logout = () => {
         authService.logout();
-        setUser(null);
         setToken(null);
+        setUser(null);
+        // also clear axios auth header (apiClient reads localStorage, but we can remove any lingering header)
+        if (apiClient.defaults.headers) {
+            delete apiClient.defaults.headers.common?.Authorization;
+        }
     };
-
+    
     const value = {
         user,
         token,
@@ -55,5 +67,5 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 };
