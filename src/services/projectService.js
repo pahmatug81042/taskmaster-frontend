@@ -1,26 +1,38 @@
-import { apiClient } from "../utils/apiClient";
+import apiClient from "../utils/apiClient";
+import { sanitizeString } from "../utils/sanitize";
 
-// Create new project
 export const createProject = async (projectData) => {
-    return apiClient.post("/projects", projectData, { auth: true });
+    const payload = {
+        name: sanitizeString(projectData.name),
+        description: sanitizeString(projectData.description || ""),
+    };
+    return apiClient.post("/projects", payload);
 };
 
-// Get all projects for logged-in user
 export const getProjects = async () => {
-    return apiClient.get("/projects", { auth: true });
+    return apiClient.get("/projects");
 };
 
-// Get single project by ID
 export const getProjectById = async (projectId) => {
-    return apiClient.get(`/projects/${projectId}`, { auth: true });
+    return apiClient.get(`/projects/${encodeURIComponent(projectId)}`);
 };
 
-// Update project
 export const updateProject = async (projectId, projectData) => {
-    return apiClient.put(`/projects/${projectId}`, projectData, { auth: true });
+    const payload = {
+        name: sanitizeString(projectData.name),
+        description: sanitizeString(projectData.description || ""),
+    };
+    return apiClient.put(`/projects/${encodeURIComponent(projectId)}`, payload);
 };
 
-// Delete project
 export const deleteProject = async (projectId) => {
-    return apiClient.delete(`/projects/${projectId}`, { auth: true });
+    return apiClient.delete(`/projects/${encodeURIComponent(projectId)}`);
+};
+
+export default {
+    createProject,
+    getProjects,
+    getProjectById,
+    updateProject,
+    deleteProject,
 };
