@@ -1,6 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect, useContext } from "react";
 import * as authService from "../services/authService";
-import apiClient from "../utils/apiClient";
 
 const AuthContext = createContext();
 
