@@ -1,7 +1,8 @@
 import { useState } from "react";
-import taskService from "../../services/taskService";
+import taskService from "../services/taskService";
 import Input from "../common/Input";
 import Button from "../common/Button";
+import { sanitizeString } from "../../utils/sanitize";
 
 const TaskForm = ({ projectId, setTasks }) => {
     const [formData, setFormData] = useState({
@@ -18,7 +19,12 @@ const TaskForm = ({ projectId, setTasks }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const newTask = await taskService.createTask(projectId, formData);
+            const payload = {
+                title: sanitizeString(formData.title),
+                description: sanitizeString(formData.description),
+                status: sanitizeString(formData.status),
+            };
+            const newTask = await taskService.createTask(projectId, payload);
             setTasks((prev) => [...prev, newTask]);
             setFormData({ title: "", description: "", status: "To Do" });
         } catch (error) {
@@ -27,7 +33,7 @@ const TaskForm = ({ projectId, setTasks }) => {
     };
 
     return (
-        <form className="task-form" onSubmit={handleSubmit}>
+        <form className="task-form" onSubmit={handleSubmit} noValidate>
             <Input 
                 type="text"
                 name="title"
@@ -44,17 +50,12 @@ const TaskForm = ({ projectId, setTasks }) => {
                 placeholder="Task Description"
                 required
             />
-            <Input 
-                as="select"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-            >
+            <Input as="select" name="status" value={formData.status} onChange={handleChange}>
                 <option value="To Do">To Do</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Done">Done</option>
             </Input>
-            <Button>Add Task</Button>
+            <Button type="submit">Add Task</Button>
         </form>
     );
 };
