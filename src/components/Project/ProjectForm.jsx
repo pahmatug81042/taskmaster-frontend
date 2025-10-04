@@ -1,13 +1,11 @@
 import { useState } from "react";
-import projectService from "../../services/projectService";
+import projectService from "../services/projectService";
 import Input from "../common/Input";
 import Button from "../common/Button";
+import { sanitizeString } from "../../utils/sanitize";
 
 const ProjectForm = ({ setProjects }) => {
-    const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-    });
+    const [formData, setFormData] = useState({ name: "", description: "" });
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -19,7 +17,11 @@ const ProjectForm = ({ setProjects }) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const newProject = await projectService.createProject(formData);
+            const payload = {
+                name: sanitizeString(formData.name),
+                description: sanitizeString(formData.description),
+            };
+            const newProject = await projectService.createProject(payload);
             setProjects((prev) => [...prev, newProject]);
             setFormData({ name: "", description: "" });
         } catch (error) {
@@ -30,7 +32,7 @@ const ProjectForm = ({ setProjects }) => {
     };
 
     return (
-        <form className="project-form" onSubmit={handleSubmit}>
+        <form className="project-form" onSubmit={handleSubmit} noValidate>
             <Input 
                 type="text"
                 name="name"
@@ -47,7 +49,7 @@ const ProjectForm = ({ setProjects }) => {
                 placeholder="Project Description"
             />
             <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Add Project"};
+                {loading ? "Creating..." : "Add Project"}
             </Button>
         </form>
     );

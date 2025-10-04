@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import { sanitizeString } from "../utils/sanitize";
+import { sanitizeString } from "../../utils/sanitize";
 
 const Register = () => {
     const [username, setUsername] = useState("");
