@@ -1,21 +1,36 @@
-import { apiClient } from "../utils/apiClient";
+import apiClient from "../utils/apiClient";
+import { sanitizeString } from "../utils/sanitize";
 
 // Register new user
 export const register = async (userData) => {
-    const response = await apiClient.post("/users/register", userData);
-    return response;
+    const payload = {
+        username: sanitizeString(userData.username),
+        email: sanitizeString(userData.email),
+        password: userData.password ? String(userData.password) : "",
+    };
+
+    const data = await apiClient.post("/users/register", payload);
+    // do not store token on register (backend policy)
+    return data;
 };
 
-// Login user -> returns JWT + user info
+// Login user -> returns { token, ...user }
 export const login = async (credentials) => {
-    const response = await apiClient.post("/users/login", credentials);
+    const payload = {
+        email: sanitizeString(credentials.email),
+        password: credentials.password ? String(credentials.password) : "",
+    };
 
-    // API expected to return { token, user }
-    if (response.data?.token) {
-        localStorage.setItem("token", JSON.stringify(response.data.token));
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+    const data = await apiClient.post("/users/login", payload);
+
+    if (data?.token) {
+        // store token as plain string (not JSON-ified), store user object separately
+        localStorage.setItem("token", data.token);
+        if (data.user) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+        }
     }
-    return response.data;
+    return data;
 };
 
 // Logout user -> clear localStorage
@@ -26,6 +41,12 @@ export const logout = () => {
 
 // Get current user from localStorage
 export const getCurrentUser = () => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
+    try {
+        const user = localStorage.getItem("user");
+        return user ? JSON.parse(user) : null;
+    } catch (error) {
+        console.error(error);
+        localStorage.removeItem("user");
+        return null;
+    }
 };
