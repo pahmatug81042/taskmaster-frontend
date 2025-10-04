@@ -1,28 +1,42 @@
-import { apiClient } from "../utils/apiClient";
+import apiClient from "../utils/apiClient";
+import { sanitizeString } from "../utils/sanitize";
 
-// Create task under a project
-const createTask = async (projectId, taskData) => {
-    return apiClient.post(`/projects/${projectId}/tasks`, taskData, { auth: true });
+const createTask = (projectId, taskData) => {
+    const payload = {
+        title: sanitizeString(taskData.title),
+        description: sanitizeString(taskData.description || ""),
+        status: sanitizeString(taskData.status || "To Do"),
+        priority: taskData.priority ? sanitizeString(taskData.priority) : undefined,
+    };
+    return apiClient.post(`/projects/${encodeURIComponent(projectId)}/tasks`, payload);
 };
 
-// Get all tasks for a project
 const getTasks = async (projectId) => {
-    return apiClient.get(`/projects/${projectId}/tasks`, { auth: true });
+    return apiClient.get(`/projects/${encodeURIComponent(projectId)}/tasks`);
 };
 
-// Get single task by ID
 const getTaskById = async (projectId, taskId) => {
-    return apiClient.get(`/projects/${projectId}/tasks/${taskId}`, { auth: true });
+    return apiClient.get(
+        `/projects/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}`
+    );
 };
 
-// Update task
 const updateTask = async (projectId, taskId, taskData) => {
-    return apiClient.put(`/projects/${projectId}/tasks/${taskId}`, taskData, { auth: true });
+    const payload = {
+        title: sanitizeString(taskData.title),
+        description: sanitizeString(taskData.description || ""),
+        status: sanitizeString(taskData.status || ""),
+        priority: taskData.priority ? sanitizeString(taskData.priority) : undefined,
+    };
+    return apiClient.put(
+        `/projects/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}`, payload
+    );
 };
 
-// Delete task
 const deleteTask = async (projectId, taskId) => {
-    return apiClient.delete(`/projects/${projectId}/tasks/${taskId}`, { auth: true });
+    return apiClient.delete(
+        `/projects/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}`
+    );
 };
 
 export default {
