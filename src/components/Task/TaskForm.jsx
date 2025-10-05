@@ -6,7 +6,7 @@ import Button from "../common/Button";
 
 /**
  * TaskForm Component
- * Creates new tasks and automatically updates TaskContext.
+ * Fully context-driven: adds new tasks via TaskContext.
  */
 const TaskForm = () => {
   const { currentProjectId, addTask } = useTasks();

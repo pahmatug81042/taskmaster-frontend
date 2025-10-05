@@ -6,10 +6,9 @@ import TaskList from "../Task/TaskList";
 
 /**
  * ProjectItem Component
- * Displays a project with edit/delete options and its related TaskList.
- * Fully reactive via ProjectContext and TaskContext.
+ * Fully context-driven: updates projects and tasks via ProjectContext and TaskContext.
  */
-const ProjectItem = ({ project, isSelected, onSelect }) => {
+const ProjectItem = ({ project, isSelected }) => {
   const { updateProject, deleteProject } = useProjects();
   const { setCurrentProjectId, fetchTasks } = useTasks();
   const [isEditing, setIsEditing] = useState(false);
@@ -41,7 +40,6 @@ const ProjectItem = ({ project, isSelected, onSelect }) => {
     try {
       await deleteProject(project._id);
 
-      // If deleted project was selected, clear current project and tasks
       if (isSelected) {
         setCurrentProjectId(null);
       }
@@ -52,8 +50,7 @@ const ProjectItem = ({ project, isSelected, onSelect }) => {
 
   const handleSelect = () => {
     setCurrentProjectId(project._id);
-    fetchTasks(project._id); // Load tasks for selected project
-    if (onSelect) onSelect(project._id);
+    fetchTasks(project._id);
   };
 
   return (
@@ -100,7 +97,6 @@ const ProjectItem = ({ project, isSelected, onSelect }) => {
         </>
       )}
 
-      {/* Render tasks only if project is selected */}
       {isSelected && <TaskList />}
     </div>
   );
