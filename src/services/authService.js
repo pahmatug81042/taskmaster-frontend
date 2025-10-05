@@ -8,39 +8,31 @@ export const register = async (userData) => {
         email: sanitizeString(userData.email),
         password: userData.password ? String(userData.password) : "",
     };
-
     const data = await apiClient.post("/users/register", payload);
     return data;
 };
 
-// Login user (backend sets HttpOnly cookie)
+// Login user - backend sets HttpOnly cookie
 export const login = async (credentials) => {
     const payload = {
         email: sanitizeString(credentials.email),
         password: credentials.password ? String(credentials.password) : "",
     };
 
-    const data = await apiClient.post("/users/login", payload);
+    await apiClient.post("/users/login", payload);
+    // Login succeeds if HTTP status is 200; we don't rely on returned body
 
-    // backend returns user fields directly, not wrapped in `user`
-    if (data?._id) {
-        localStorage.setItem(
-            "user",
-            JSON.stringify({
-                _id: data._id,
-                username: data.username,
-                email: data.email,
-            })
-        );
-    }
+    // Fetch current user after login
+    const user = await getCurrentUserFromServer();
+    if (user) localStorage.setItem("user", JSON.stringify(user));
 
-    return data;
+    return user;
 };
 
-// Logout user - clears cookie via backend endpoint
+// Logout user - clears HttpOnly cookie on backend
 export const logout = async () => {
     try {
-        await apiClient.post("/users/logout"); // backend clears cookie
+        await apiClient.post("/users/logout");
     } catch (error) {
         console.warn("Logout request failed:", error.message);
     } finally {
@@ -59,9 +51,20 @@ export const getCurrentUser = () => {
     }
 };
 
+// Fetch current user from backend
+export const getCurrentUserFromServer = async () => {
+    try {
+        const user = await apiClient.get("/users/me"); // your backend must return user info
+        return user;
+    } catch {
+        return null;
+    }
+};
+
 export default {
     register,
     login,
     logout,
     getCurrentUser,
+    getCurrentUserFromServer,
 };

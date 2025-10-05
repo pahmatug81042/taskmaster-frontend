@@ -3,55 +3,45 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 import * as authService from "../services/authService";
 
 export const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        try {
-            const stored = localStorage.getItem("user");
-            return stored ? JSON.parse(stored) : null;
-        } catch {
-            return null;
-        }
-    });
+  const [user, setUser] = useState(() => authService.getCurrentUser());
+  const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        setLoading(false);
-    }, []);
-
-    const login = async (credentials) => {
-        const data = await authService.login(credentials);
-        // backend returns user directly
-        if (data?._id) {
-            setUser({
-                _id: data._id,
-                username: data.username,
-                email: data.email,
-            });
-        }
-        return data;
+  // Ensure current user is fetched on mount (for refresh persistence)
+  useEffect(() => {
+    const fetchUser = async () => {
+      const serverUser = await authService.getCurrentUserFromServer();
+      if (serverUser) setUser(serverUser);
+      setLoading(false);
     };
+    fetchUser();
+  }, []);
 
-    const register = async (userData) => {
-        return await authService.register(userData);
-    };
+  const login = async (credentials) => {
+    const userFromServer = await authService.login(credentials);
+    if (userFromServer) setUser(userFromServer);
+    return userFromServer;
+  };
 
-    const logout = async () => {
-        await authService.logout();
-        setUser(null);
-    };
+  const register = async (userData) => {
+    return await authService.register(userData);
+  };
 
-    const value = {
-        user,
-        loading,
-        login,
-        register,
-        logout,
-        isAuthenticated: !!user,
-    };
+  const logout = async () => {
+    await authService.logout();
+    setUser(null);
+  };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const value = {
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -20,9 +20,9 @@ const Login = () => {
         email: sanitizeString(email),
         password: password ? String(password) : "",
       };
-      const data = await login(payload);
-      if (data?._id) {
-        navigate("/dashboard");
+      const user = await login(payload);
+      if (user?._id) {
+        navigate("/dashboard"); // redirect on successful login
       } else {
         setError("Login failed. Please try again.");
       }
