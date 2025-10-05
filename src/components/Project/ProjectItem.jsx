@@ -1,7 +1,13 @@
 import { useState } from "react";
+import DOMPurify from "dompurify"; // Sanitize inputs before update
 import projectService from "../../services/projectService";
 import TaskList from "../Task/TaskList";
 
+/**
+ * ProjectItem Component
+ * Displays a project with edit/delete options and its related TaskList.
+ * Ensures safe editing via DOMPurify to prevent XSS vulnerabilities.
+ */
 const ProjectItem = ({ project, setProjects }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
@@ -9,29 +15,40 @@ const ProjectItem = ({ project, setProjects }) => {
         description: project.description,
     });
 
+    // Handle form input safely
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Securely update the project
     const handleUpdate = async () => {
         try {
-            const updated = await projectService.updateProject(project._id, formData);
+            const sanitizedData = {
+                name: DOMPurify.sanitize(formData.name.trim()),
+                description: DOMPurify.sanitize(formData.description.trim()),
+            };
+
+            const updated = await projectService.updateProject(project._id, sanitizedData);
+
+            // Replace project with updated version in state
             setProjects((prev) => 
-                prev.map((p) => (p._id === project._id ? updated : p))
+                prev.map((p) => (p._id === project._id ? updated: p))
             );
+
             setIsEditing(false);
         } catch (error) {
-            console.error("Failed to update project", error);
+            console.error("Failed to update project:", error);
         }
     };
 
+    // Delete project safely
     const handleDelete = async () => {
         try {
             await projectService.deleteProject(project._id);
             setProjects((prev) => prev.filter((p) => p._id !== project._id));
         } catch (error) {
-            console.error("Failed to delete project", error);
+            console.error("Failed to delete project:", error);
         }
     };
 
@@ -59,8 +76,9 @@ const ProjectItem = ({ project, setProjects }) => {
                 </>
             ) : (
                 <>
-                    <h3>{project.name}</h3>
-                    <p>{project.description}</p>
+                    {/* Sanitize display output to prevent script injection */}
+                    <h3 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.name) }} />
+                    <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(project.description) }} />
                     <div className="edit-actions">
                         <button onClick={() => setIsEditing(true)}>Edit</button>
                         <button onClick={handleDelete}>Delete</button>
@@ -68,7 +86,7 @@ const ProjectItem = ({ project, setProjects }) => {
                 </>
             )}
 
-            {/* TaskList Integration */}
+            {/* Render related task list */}
             <TaskList projectId={project._id} />
         </div>
     );
