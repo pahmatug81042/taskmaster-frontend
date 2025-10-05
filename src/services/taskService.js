@@ -9,7 +9,6 @@ const createTask = async (projectId, taskData) => {
         title: DOMPurify.sanitize(taskData.title?.trim() || ""),
         description: DOMPurify.sanitize(taskData.description?.trim() || ""),
         status: DOMPurify.sanitize(taskData.status?.trim() || "To Do"),
-        priority: taskData.priority ? DOMPurify.sanitize(taskData.priority?.trim()) : undefined,
     };
     return apiClient.post(`/projects/${encodeURIComponent(projectId)}/tasks`, payload);
 };
@@ -29,7 +28,6 @@ const updateTask = async (projectId, taskId, taskData) => {
         title: DOMPurify.sanitize(taskData.title?.trim() || ""),
         description: DOMPurify.sanitize(taskData.description?.trim() || ""),
         status: DOMPurify.sanitize(taskData.status?.trim() || ""),
-        priority: taskData.priority ? DOMPurify.sanitize(taskData.priority?.trim()) : undefined,
     };
     return apiClient.put(
         `/projects/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}`, payload
