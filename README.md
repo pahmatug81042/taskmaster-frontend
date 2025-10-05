@@ -1,16 +1,62 @@
-# React + Vite
+# React Frontend – Secure Task Management Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This frontend is built using **React + Vite** and implements a **secure, modern task and project management dashboard**. It provides authentication, CRUD functionality, and real-time UI updates — all with a strong emphasis on **security and maintainability**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Authentication System:** Secure login/register with JWT-based token storage  
+- **Projects & Tasks Management:** Create, edit, delete, and view tasks within projects  
+- **Context API State Management:** Centralized handling of user, auth, and project data  
+- **Input Sanitization:** Uses `DOMPurify` to prevent XSS attacks from user-generated input  
+- **API Client with Token Handling:** Centralized Axios client attaches tokens automatically  
+- **Error Handling:** Consistent and user-friendly feedback for all async operations  
+- **Responsive UI Components:** Built with reusable `Input` and `Button` components  
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Security Highlights
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This frontend has undergone a **complete security sweep** including:
+
+- **DOMPurify sanitization** for all user-displayed fields (titles, descriptions, etc.)
+- **Controlled components** for every form input
+- **Axios interceptor** to attach JWT securely from `localStorage`
+- **Graceful API error handling** to prevent sensitive data leaks
+- **Frontend validation** with trimmed and sanitized form submissions
+
+These measures complement backend safeguards such as CSP headers, rate-limiting, and data validation.
+
+---
+
+## Tech Stack
+
+- **React 18 + Vite**
+- **Axios** for API communication
+- **React Router DOM** for navigation
+- **DOMPurify** for sanitization
+- **Context API + Hooks** for state management
+
+---
+
+## Setup & Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-username/your-frontend-repo.git
+   cd your-frontend-repo
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a .env file:
+   ```bash
+   VITE_API_URL=http://localhost:5000/api
+   ```
+4. Run the app locally:
+   ```bash
+   npm run dev
+   ```
+The app should now be running at http://localhost:5173
