@@ -1,12 +1,15 @@
 import apiClient from "../utils/apiClient";
-import { sanitizeString } from "../utils/sanitize";
+import DOMPurify from "dompurify";
 
-const createTask = (projectId, taskData) => {
+// Ensure cookies are sent with requests
+apiClient.defaults.withCredentials = true;
+
+const createTask = async (projectId, taskData) => {
     const payload = {
-        title: sanitizeString(taskData.title),
-        description: sanitizeString(taskData.description || ""),
-        status: sanitizeString(taskData.status || "To Do"),
-        priority: taskData.priority ? sanitizeString(taskData.priority) : undefined,
+        title: DOMPurify.sanitize(taskData.title?.trim() || ""),
+        description: DOMPurify.sanitize(taskData.description?.trim() || ""),
+        status: DOMPurify.sanitize(taskData.status?.trim() || "To Do"),
+        priority: taskData.priority ? DOMPurify.sanitize(taskData.priority?.trim()) : undefined,
     };
     return apiClient.post(`/projects/${encodeURIComponent(projectId)}/tasks`, payload);
 };
@@ -23,10 +26,10 @@ const getTaskById = async (projectId, taskId) => {
 
 const updateTask = async (projectId, taskId, taskData) => {
     const payload = {
-        title: sanitizeString(taskData.title),
-        description: sanitizeString(taskData.description || ""),
-        status: sanitizeString(taskData.status || ""),
-        priority: taskData.priority ? sanitizeString(taskData.priority) : undefined,
+        title: DOMPurify.sanitize(taskData.title?.trim() || ""),
+        description: DOMPurify.sanitize(taskData.description?.trim() || ""),
+        status: DOMPurify.sanitize(taskData.status?.trim() || ""),
+        priority: taskData.priority ? DOMPurify.sanitize(taskData.priority?.trim()) : undefined,
     };
     return apiClient.put(
         `/projects/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}`, payload

@@ -1,10 +1,13 @@
 import apiClient from "../utils/apiClient";
-import { sanitizeString } from "../utils/sanitize";
+import DOMPurify from "dompurify";
+
+// Ensure cookies are sent with requests
+apiClient.defaults.withCredentials = true;
 
 export const createProject = async (projectData) => {
     const payload = {
-        name: sanitizeString(projectData.name),
-        description: sanitizeString(projectData.description || ""),
+        name: DOMPurify.sanitize(projectData.name?.trim() || ""),
+        description: DOMPurify.sanitize(projectData.description?.trim() || ""),
     };
     return apiClient.post("/projects", payload);
 };
@@ -19,8 +22,8 @@ export const getProjectById = async (projectId) => {
 
 export const updateProject = async (projectId, projectData) => {
     const payload = {
-        name: sanitizeString(projectData.name),
-        description: sanitizeString(projectData.description || ""),
+        name: DOMPurify.sanitize(projectData.name?.trim() || ""),
+        description: DOMPurify.sanitize(projectData.description?.trim() || ""),
     };
     return apiClient.put(`/projects/${encodeURIComponent(projectId)}`, payload);
 };
