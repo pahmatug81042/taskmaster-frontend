@@ -6,11 +6,13 @@ import Register from "./components/Auth/Register";
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
+import ThemeToggleButton from "./components/ThemeToggleButton";
 import './App.css';
 
 function App() {
   return (
     <>
+      <ThemeToggleButton />
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />

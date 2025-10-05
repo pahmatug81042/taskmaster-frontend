@@ -21,13 +21,23 @@ export const login = async (credentials) => {
     };
 
     const data = await apiClient.post("/users/login", payload);
-    if (data?.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
+
+    // backend returns user fields directly, not wrapped in `user`
+    if (data?._id) {
+        localStorage.setItem(
+            "user",
+            JSON.stringify({
+                _id: data._id,
+                username: data.username,
+                email: data.email,
+            })
+        );
     }
+
     return data;
 };
 
-// Logout user - clears cookie vua backend endpoint
+// Logout user - clears cookie via backend endpoint
 export const logout = async () => {
     try {
         await apiClient.post("/users/logout"); // backend clears cookie
@@ -47,4 +57,11 @@ export const getCurrentUser = () => {
         localStorage.removeItem("user");
         return null;
     }
+};
+
+export default {
+    register,
+    login,
+    logout,
+    getCurrentUser,
 };

@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import * as authService from "../services/authService";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -24,7 +24,15 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (credentials) => {
         const data = await authService.login(credentials);
-        if (data?.user) setUser(data.user);
+        // backend returns user directly
+        if (data?._id) {
+            setUser({
+                _id: data._id,
+                username: data.username,
+                email: data.email,
+            });
+        }
+        return data;
     };
 
     const register = async (userData) => {

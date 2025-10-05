@@ -1,57 +1,41 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import DOMPurify from "dompurify"; // For safe rendering
-import taskService from "../../services/taskService";
+import DOMPurify from "dompurify";
 import TaskItem from "./TaskItem";
 import TaskForm from "./TaskForm";
+import { useTasks } from "../../contexts/TaskContext";
 
 /**
  * TaskList Component
- * Handles fetching, rendering, and sanitizing task data for a given project.
- * Protects against injected or tampered task payloads.
+ * Uses TaskContext to display tasks for the selected project.
+ * Tasks update automatically when added, edited, or deleted.
  */
-const TaskList = ({ projectId }) => {
-    const [tasks, setTasks] = useState([]);
+const TaskList = () => {
+  const { tasks, currentProjectId } = useTasks();
 
-    // Fetch all tasks for a project
-    const fetchTasks = async () => {
-        try {
-            const data = await taskService.getTasks(projectId);
-            // Sanitize all fetched data before rendering
-            const sanitizedTasks = data.map((task) => ({
-                ...task,
-                title: DOMPurify.sanitize(task.title),
-                description: DOMPurify.sanitize(task.description),
-                status: DOMPurify.sanitize(task.status),
-            }));
-            setTasks(sanitizedTasks);
-        } catch (error) {
-            console.error("Failed to fetch tasks:", error);
-        }
-    };
+  if (!currentProjectId) {
+    return <p>Please select a project to view its tasks.</p>;
+  }
 
-    useEffect(() => {
-        fetchTasks();
-    }, [projectId]);
-
-    return (
-        <div className="task-list">
-            <h3>Tasks</h3>
-            <TaskForm projectId={projectId} setTasks={setTasks} />
-            {tasks.length === 0 ? (
-                <p>No tasks found for this project yet.</p>
-            ) : (
-                tasks.map((task) => (
-                    <TaskItem 
-                        key={task._id}
-                        task={task}
-                        projectId={projectId}
-                        setTasks={setTasks}
-                    />
-                ))
-            )}
-        </div>
-    );
+  return (
+    <div className="task-list">
+      <h3>Tasks</h3>
+      <TaskForm projectId={currentProjectId} />
+      {tasks.length === 0 ? (
+        <p>No tasks found for this project yet.</p>
+      ) : (
+        tasks.map((task) => (
+          <TaskItem
+            key={task._id}
+            task={{
+              ...task,
+              title: DOMPurify.sanitize(task.title),
+              description: DOMPurify.sanitize(task.description),
+              status: DOMPurify.sanitize(task.status),
+            }}
+          />
+        ))
+      )}
+    </div>
+  );
 };
 
 export default TaskList;
