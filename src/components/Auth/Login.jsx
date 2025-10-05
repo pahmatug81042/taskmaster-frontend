@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import Input from "../common/Input";
 import Button from "../common/Button";
 import { sanitizeString } from "../../utils/sanitize";
@@ -15,23 +15,22 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-
         try {
             const payload = {
                 email: sanitizeString(email),
                 password: password ? String(password) : "",
             };
             const data = await login(payload);
-            if (data?.token) {
+            if (data?.user) {
                 navigate("/dashboard");
             } else {
                 setError("Login failed. Please try again.");
             }
         } catch (err) {
-            setError(err?.response?.data?.message || err?.message || "Login failed");
+            setError(err?.response?.data?.message || "Login failed.");
         }
     };
-    
+
     return (
         <div className="auth-container">
             <h2>Login</h2>
