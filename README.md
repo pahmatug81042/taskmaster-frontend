@@ -3,6 +3,9 @@
 This frontend is built using **React + Vite** and implements a **secure, modern task and project management dashboard**. It provides authentication, CRUD functionality, and real-time UI updates — all with a strong emphasis on **security and maintainability**.
 
 ---
+## Link to Backend GitHub Repository
+https://github.com/pahmatug81042/taskmaster-backend
+---
 
 ## Features
 
