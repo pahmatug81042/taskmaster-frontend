@@ -1,49 +1,59 @@
-import DOMPurify from "dompurify";
+import { useState, useEffect, useCallback } from "react";
 import ProjectItem from "./ProjectItem";
-import { useProjects } from "../../contexts/ProjectContext";
-import { useTasks } from "../../contexts/TaskContext";
+import ProjectForm from "./ProjectForm";
+import projectService from "../../services/projectService";
+import TaskList from "../Task/TaskList";
 
-/**
- * ProjectList Component
- * Renders all user projects from ProjectContext,
- * highlights the selected project, and fetches tasks via TaskContext.
- */
 const ProjectList = () => {
-  const { projects } = useProjects();
-  const { currentProjectId, setCurrentProjectId, fetchTasks } = useTasks();
+  const [projects, setProjects] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
-  if (!projects || projects.length === 0) {
-    return <p>No projects found. Start by creating one!</p>;
-  }
+  const fetchProjects = useCallback(async () => {
+    try {
+      const data = await projectService.getProjects();
+      setProjects(data);
+      if (data.length > 0 && !selectedId) setSelectedId(data[0]._id);
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+    }
+  }, [selectedId]);
 
-  const handleSelect = (projectId) => {
-    setCurrentProjectId(projectId);
-    fetchTasks(projectId); // Fetch tasks for the selected project
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  const handleUpdate = (updatedProject) =>
+    setProjects((prev) =>
+      prev.map((p) => (p._id === updatedProject._id ? updatedProject : p))
+    );
+
+  const handleDelete = (deletedId) => {
+    setProjects((prev) => prev.filter((p) => p._id !== deletedId));
+    if (deletedId === selectedId) setSelectedId(null);
   };
+
+  if (!projects || projects.length === 0) return <p>No projects found.</p>;
 
   return (
     <div className="project-list">
-      {projects.map((project) => {
-        const isSelected = project._id === currentProjectId;
+      {projects.map((project) => (
+        <div
+          key={project._id}
+          className={`project-item-wrapper ${
+            project._id === selectedId ? "selected" : ""
+          }`}
+        >
+          <ProjectItem
+            project={project}
+            isSelected={project._id === selectedId}
+            onSelect={() => setSelectedId(project._id)}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+          />
 
-        return (
-          <div
-            key={project._id}
-            className={`project-item-wrapper ${isSelected ? "selected" : ""}`}
-            onClick={() => handleSelect(project._id)}
-            data-name={DOMPurify.sanitize(project.name)}
-          >
-            <ProjectItem
-              project={{
-                ...project,
-                name: DOMPurify.sanitize(project.name),
-                description: DOMPurify.sanitize(project.description),
-              }}
-              isSelected={isSelected}
-            />
-          </div>
-        );
-      })}
+          {project._id === selectedId && <TaskList projectId={project._id} />}
+        </div>
+      ))}
     </div>
   );
 };

@@ -15,19 +15,23 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       const payload = {
         email: sanitizeString(email),
         password: password ? String(password) : "",
       };
+
       const user = await login(payload);
-      if (user?._id) {
-        navigate("/dashboard"); // redirect on successful login
+
+      if (user) {
+        // ✅ Small delay ensures context updates before route changes
+        setTimeout(() => navigate("/dashboard"), 100);
       } else {
-        setError("Login failed. Please try again.");
+        setError("Login failed. Please check your credentials.");
       }
     } catch (err) {
-      setError(err?.response?.data?.message || "Login failed.");
+      setError(err?.response?.data?.message || err?.message || "Login failed.");
     }
   };
 

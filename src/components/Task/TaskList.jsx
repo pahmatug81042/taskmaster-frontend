@@ -1,39 +1,51 @@
-import DOMPurify from "dompurify";
+import { useState, useEffect } from "react";
 import TaskItem from "./TaskItem";
 import TaskForm from "./TaskForm";
-import { useTasks } from "../../contexts/TaskContext";
+import taskService from "../../services/taskService";
 
 /**
  * TaskList Component
- * Fully context-driven: displays tasks from TaskContext
- * for the currently selected project.
- * Automatically updates when tasks change in context.
+ * Standalone list of tasks for a given project.
  */
-const TaskList = () => {
-  const { tasks, currentProjectId } = useTasks();
+const TaskList = ({ projectId }) => {
+  const [tasks, setTasks] = useState([]);
 
-  if (!currentProjectId) {
-    return <p>Please select a project to view its tasks.</p>;
-  }
+  const fetchTasks = async () => {
+    try {
+      const data = await taskService.getTasks(projectId);
+      setTasks(data || []);
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (projectId) fetchTasks();
+  }, [projectId]);
+
+  const handleAdd = (newTask) => setTasks((prev) => [...prev, newTask]);
+  const handleUpdate = (updatedTask) =>
+    setTasks((prev) =>
+      prev.map((t) => (t._id === updatedTask._id ? updatedTask : t))
+    );
+  const handleDelete = (deletedId) =>
+    setTasks((prev) => prev.filter((t) => t._id !== deletedId));
+
+  if (!projectId) return <p>Select a project to view tasks.</p>;
 
   return (
     <div className="task-list">
-      <h3>Tasks</h3>
-      {/* TaskForm automatically adds tasks to context */}
-      <TaskForm projectId={currentProjectId} />
-
+      <TaskForm projectId={projectId} onAdd={handleAdd} />
       {tasks.length === 0 ? (
-        <p>No tasks found for this project yet.</p>
+        <p>No tasks yet.</p>
       ) : (
         tasks.map((task) => (
           <TaskItem
             key={task._id}
-            task={{
-              ...task,
-              title: DOMPurify.sanitize(task.title),
-              description: DOMPurify.sanitize(task.description),
-              status: DOMPurify.sanitize(task.status),
-            }}
+            task={task}
+            projectId={projectId}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
           />
         ))
       )}

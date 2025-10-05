@@ -1,16 +1,21 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-// This assumes you store the token in localStorage
 const ProtectedRoute = ({ children }) => {
-    const token = localStorage.getItem("token");
+  const { isAuthenticated, loading } = useAuth();
 
-    // If no token, redirect to login page
-    if (!token) {
-        return <Navigate to="/login" replace />;
-    }
+  // Wait until AuthContext finishes checking cookies
+  if (loading) {
+    return <p>Loading authentication...</p>;
+  }
 
-    // Otherwise, render the protected component
-    return children;
+  // If no valid user after loading, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Otherwise render the protected component
+  return children;
 };
 
 export default ProtectedRoute;

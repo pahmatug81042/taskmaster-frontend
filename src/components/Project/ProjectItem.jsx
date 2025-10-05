@@ -1,16 +1,12 @@
 import { useState } from "react";
 import DOMPurify from "dompurify";
-import { useProjects } from "../../contexts/ProjectContext";
-import { useTasks } from "../../contexts/TaskContext";
-import TaskList from "../Task/TaskList";
+import projectService from "../../services/projectService";
 
 /**
  * ProjectItem Component
- * Fully context-driven: updates projects and tasks via ProjectContext and TaskContext.
+ * Standalone project card with edit/delete functionality.
  */
-const ProjectItem = ({ project, isSelected }) => {
-  const { updateProject, deleteProject } = useProjects();
-  const { setCurrentProjectId, fetchTasks } = useTasks();
+const ProjectItem = ({ project, isSelected, onSelect, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: project.name,
@@ -24,12 +20,15 @@ const ProjectItem = ({ project, isSelected }) => {
 
   const handleUpdate = async () => {
     try {
-      const sanitizedData = {
+      const payload = {
         name: DOMPurify.sanitize(formData.name.trim()),
         description: DOMPurify.sanitize(formData.description.trim()),
       };
-
-      await updateProject(project._id, sanitizedData);
+      const updatedProject = await projectService.updateProject(
+        project._id,
+        payload
+      );
+      onUpdate && onUpdate(updatedProject);
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update project:", error);
@@ -38,25 +37,17 @@ const ProjectItem = ({ project, isSelected }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteProject(project._id);
-
-      if (isSelected) {
-        setCurrentProjectId(null);
-      }
+      await projectService.deleteProject(project._id);
+      onDelete && onDelete(project._id);
     } catch (error) {
       console.error("Failed to delete project:", error);
     }
   };
 
-  const handleSelect = () => {
-    setCurrentProjectId(project._id);
-    fetchTasks(project._id);
-  };
-
   return (
     <div
       className={`project-item ${isSelected ? "selected" : ""}`}
-      onClick={handleSelect}
+      onClick={() => onSelect && onSelect(project._id)}
     >
       {isEditing ? (
         <>
@@ -96,8 +87,6 @@ const ProjectItem = ({ project, isSelected }) => {
           </div>
         </>
       )}
-
-      {isSelected && <TaskList />}
     </div>
   );
 };

@@ -1,74 +1,63 @@
 import { useState } from "react";
-import projectService from "../../services/projectService";
+import DOMPurify from "dompurify";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import DOMPurify from "dompurify"; // DOMPurify for sanitation
+import projectService from "../../services/projectService";
 
 /**
  * ProjectForm Component
- * Allows users to create new projects securely.
- * Automatically sanitizes all user inputs with DOMPurify to prevent XSS attacks.
+ * Standalone form for creating a project without context.
  */
-const ProjectForm = ({ setProjects }) => {
-    const [formData, setFormData] = useState({ name: "", description: "" });
-    const [loading, setLoading] = useState(false);
+const ProjectForm = ({ onAdd }) => {
+  const [formData, setFormData] = useState({ name: "", description: "" });
+  const [loading, setLoading] = useState(false);
 
-    // Handle input changes with safe value updates
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    // Handle form submission securely
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            // Sanitize user input before sending to backend
-            const payload = {
-                name: DOMPurify.sanitize(formData.name.trim()),
-                description: DOMPurify.sanitize(formData.description.trim()),
-            };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-            const newProject = await projectService.createProject(payload);
+    try {
+      const payload = {
+        name: DOMPurify.sanitize(formData.name.trim()),
+        description: DOMPurify.sanitize(formData.description.trim()),
+      };
+      const newProject = await projectService.createProject(payload);
+      onAdd && onAdd(newProject);
+      setFormData({ name: "", description: "" });
+    } catch (error) {
+      console.error("Failed to create project:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            // Update local state with new project
-            setProjects((prev) => [...prev, newProject]);
-
-            // Reset form after successful submission
-            setFormData({ name: "", description: "" });
-        } catch (error) {
-            console.error("Failed to create project:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <form className="project-form" onSubmit={handleSubmit} noValidate>
-            <Input 
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Project Name"
-                required
-            />
-            <Input 
-                as="textarea"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Project Description"
-            />
-            <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Add Project"}
-            </Button>
-        </form>
-    );
+  return (
+    <form className="project-form" onSubmit={handleSubmit} noValidate>
+      <Input
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        placeholder="Project Name"
+        required
+      />
+      <Input
+        as="textarea"
+        name="description"
+        value={formData.description}
+        onChange={handleChange}
+        placeholder="Project Description"
+      />
+      <Button type="submit" disabled={loading}>
+        {loading ? "Creating..." : "Add Project"}
+      </Button>
+    </form>
+  );
 };
 
 export default ProjectForm;

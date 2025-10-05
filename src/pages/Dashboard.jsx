@@ -1,55 +1,72 @@
-import { useEffect } from "react";
-import { useProjects } from "../contexts/ProjectContext";
-import { useTasks } from "../contexts/TaskContext";
+import { useState, useEffect, useCallback } from "react";
 import ProjectList from "../components/Project/ProjectList";
 import ProjectForm from "../components/Project/ProjectForm";
-import TaskList from "../components/Task/TaskList";
+import projectService from "../services/projectService";
 
 /**
  * Dashboard Component
- * Fully reactive dashboard showing projects and tasks
- * using ProjectContext and TaskContext without local state.
+ * Standalone dashboard managing projects and tasks without context.
  */
 const Dashboard = () => {
-  const { projects, loading: projectsLoading, fetchProjects } = useProjects();
-  const {
-    currentProjectId,
-    tasks,
-    loading: tasksLoading,
-    fetchTasks,
-  } = useTasks();
+  const [projects, setProjects] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch projects on mount
+  // Fetch all projects
+  const fetchProjects = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await projectService.getProjects();
+      setProjects(data || []);
+      if (data && data.length > 0 && !selectedId) setSelectedId(data[0]._id);
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedId]);
+
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
-  // Fetch tasks whenever the selected project changes
-  useEffect(() => {
-    if (currentProjectId) {
-      fetchTasks(currentProjectId);
-    }
-  }, [currentProjectId, fetchTasks]);
+  // Handlers for project CRUD
+  const handleAddProject = (newProject) => {
+    setProjects((prev) => [...prev, newProject]);
+    setSelectedId(newProject._id); // auto-select newly added project
+  };
+
+  const handleUpdateProject = (updatedProject) => {
+    setProjects((prev) =>
+      prev.map((p) => (p._id === updatedProject._id ? updatedProject : p))
+    );
+  };
+
+  const handleDeleteProject = (deletedId) => {
+    setProjects((prev) => prev.filter((p) => p._id !== deletedId));
+    if (deletedId === selectedId) setSelectedId(null);
+  };
 
   return (
     <div className="dashboard-container">
       <h1>My Projects</h1>
 
-      {projectsLoading && <p>Loading Projects...</p>}
-      {!projectsLoading && projects.length === 0 && (
+      {loading && <p>Loading Projects...</p>}
+      {!loading && projects.length === 0 && (
         <p>No projects yet. Create one below!</p>
       )}
 
-      {!projectsLoading && projects.length > 0 && <ProjectList />}
-
-      <ProjectForm />
-
-      {currentProjectId && (
-        <div className="task-section">
-          <h2>Tasks for Selected Project</h2>
-          {tasksLoading ? <p>Loading tasks...</p> : <TaskList tasks={tasks} />}
-        </div>
+      {!loading && projects.length > 0 && (
+        <ProjectList
+          projects={projects}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          onUpdate={handleUpdateProject}
+          onDelete={handleDeleteProject}
+        />
       )}
+
+      <ProjectForm onAdd={handleAddProject} />
     </div>
   );
 };

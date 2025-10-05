@@ -1,15 +1,14 @@
 import { useState } from "react";
 import DOMPurify from "dompurify";
-import { useTasks } from "../../contexts/TaskContext";
 import Input from "../common/Input";
 import Button from "../common/Button";
+import taskService from "../../services/taskService";
 
 /**
  * TaskForm Component
- * Fully context-driven: adds new tasks via TaskContext.
+ * Standalone form for creating tasks.
  */
-const TaskForm = () => {
-  const { currentProjectId, addTask } = useTasks();
+const TaskForm = ({ projectId, onAdd }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -24,18 +23,17 @@ const TaskForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!currentProjectId) return;
-    setLoading(true);
+    if (!projectId) return;
 
+    setLoading(true);
     try {
-      const sanitizedData = {
+      const payload = {
         title: DOMPurify.sanitize(formData.title.trim()),
         description: DOMPurify.sanitize(formData.description.trim()),
         status: DOMPurify.sanitize(formData.status.trim()),
       };
-
-      await addTask(currentProjectId, sanitizedData);
-
+      const newTask = await taskService.createTask(projectId, payload);
+      onAdd && onAdd(newTask);
       setFormData({ title: "", description: "", status: "To Do" });
     } catch (error) {
       console.error("Failed to create task:", error);
