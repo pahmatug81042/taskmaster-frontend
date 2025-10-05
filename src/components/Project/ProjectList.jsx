@@ -1,18 +1,33 @@
+import DOMPurify from "dompurify"; // Import DOMPurify for safe rendering
 import ProjectItem from "./ProjectItem";
 
+/**
+ * ProjectList Component
+ * Renders all user projects safely and prevents any XSS risks
+ * by sanitizing project names before rendering.
+ */
 const ProjectList = ({ projects, setProjects }) => {
-    if (projects.length === 0) {
+    if (!projects || projects.length === 0) {
         return <p>No projects found. Start by creating one!</p>;
     }
 
     return (
         <div className="project-list">
             {projects.map((project) => (
-                <ProjectItem 
+                <div
                     key={project._id}
-                    project={project}
-                    setProjects={setProjects}
-                />
+                    // Prevent possible script injection from backend responses
+                    data-name={DOMPurify.sanitize(project.name)}
+                >
+                    <ProjectItem 
+                        project={{
+                            ...project,
+                            name: DOMPurify.sanitize(project.name),
+                            description: DOMPurify.sanitize(project.description),
+                        }}
+                        setProjects={setProjects}
+                    />
+                </div>
             ))}
         </div>
     );
