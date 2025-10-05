@@ -5,8 +5,9 @@ import { useTasks } from "../../contexts/TaskContext";
 
 /**
  * TaskList Component
- * Uses TaskContext to display tasks for the selected project.
- * Tasks update automatically when added, edited, or deleted.
+ * Fully context-driven: displays tasks from TaskContext
+ * for the currently selected project.
+ * Automatically updates when tasks change in context.
  */
 const TaskList = () => {
   const { tasks, currentProjectId } = useTasks();
@@ -18,7 +19,9 @@ const TaskList = () => {
   return (
     <div className="task-list">
       <h3>Tasks</h3>
+      {/* TaskForm automatically adds tasks to context */}
       <TaskForm projectId={currentProjectId} />
+
       {tasks.length === 0 ? (
         <p>No tasks found for this project yet.</p>
       ) : (
